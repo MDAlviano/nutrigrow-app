@@ -58,17 +58,13 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
-    // --- 1. COMPOSE NAVIGATION (Perpindahan Halaman) ---
     implementation(libs.androidx.navigation.compose)
 
-    // --- 2. RETROFIT & OKHTTP (Koneksi ke Go Backend) ---
     implementation(libs.retrofit2.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.logging.interceptor)
 
-    // --- 3. COIL (Load Gambar dari Cloudinary URL ke Compose) ---
     implementation(libs.coil.compose)
 
-    // --- 4. DATASTORE (Simpan JWT Token dari Go secara lokal & aman) ---
     implementation(libs.androidx.datastore.preferences)
 }
