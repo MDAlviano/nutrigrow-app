@@ -18,3 +18,12 @@ data class LoginData(
     @SerializedName("token") val token: String,
     @SerializedName("user") val user: UserDto
 )
+
+data class PlantingProject(
+    @SerializedName("id") val id: String,
+    @SerializedName("plant_name") val plantName: String,
+    @SerializedName("media_type") val mediaType: String,
+    @SerializedName("target_harvest_days") val targetHarvestDays: Int,
+    @SerializedName("status") val status: String,
+    @SerializedName("start_date") val startDate: String
+)

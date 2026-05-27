@@ -2,6 +2,8 @@ package com.nutrigrow.app.data.remote
 
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.POST
 
 interface NutrigrowApi {
@@ -15,4 +17,10 @@ interface NutrigrowApi {
     suspend fun login(
         @Body request: Map<String, String>
     ): Response<BaseResponse<LoginData>>
+
+    @GET("planner/projects")
+    suspend fun getProjects(
+        @Header("Authorization") token: String
+    ): Response<BaseResponse<List<PlantingProject>>>
+
 }
