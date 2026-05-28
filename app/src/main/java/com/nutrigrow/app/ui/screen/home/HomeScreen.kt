@@ -51,7 +51,8 @@ fun HomeScreen(
     viewModel: HomeViewModel,
     onLogoutClick: () -> Unit,
     onNavigateToAIGrow: () -> Unit,
-    onNavigateToPlanner: () -> Unit
+    onNavigateToPlanner: () -> Unit,
+    onProjectClick: (String) -> Unit
 ) {
     val emeraldColor = Color(0xFF059669)
     val state by viewModel.homeState.collectAsState()
@@ -136,7 +137,11 @@ fun HomeScreen(
                             modifier = Modifier.fillMaxSize()
                         ) {
                             items(projects) { project ->
-                                ProjectItemCard(project)
+                                Card(
+                                    onClick = { onProjectClick(project.id) } // problem
+                                ) {
+                                    ProjectItemCard(project)
+                                }
                             }
                         }
                     }

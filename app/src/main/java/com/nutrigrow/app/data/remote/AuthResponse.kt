@@ -25,7 +25,8 @@ data class PlantingProject(
     @SerializedName("media_type") val mediaType: String,
     @SerializedName("target_harvest_days") val targetHarvestDays: Int,
     @SerializedName("status") val status: String,
-    @SerializedName("start_date") val startDate: String
+    @SerializedName("start_date") val startDate: String,
+    @SerializedName("logs") val logs: List<ProjectLog>? = null
 )
 
 data class DiagnosisData(
@@ -34,4 +35,13 @@ data class DiagnosisData(
     @SerializedName("ai_reasoning") val aiReasoning: String,
     @SerializedName("organic_solutions") val organicSolutions: List<String>,
     @SerializedName("image_url") val imageUrl: String?
+)
+
+data class ProjectLog(
+    @SerializedName("id") val id: String,
+    @SerializedName("notes") val notes: String,
+    @SerializedName("image_url") val imageUrl: String?,
+    @SerializedName("ai_insight_status") val aiInsightStatus: String?,
+    @SerializedName("ai_insight_message") val aiInsightMessage: String?,
+    @SerializedName("created_at") val createdAt: String
 )

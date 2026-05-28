@@ -19,10 +19,13 @@ import com.nutrigrow.app.ui.screen.auth.AuthViewModel
 import com.nutrigrow.app.ui.screen.auth.LoginScreen
 import com.nutrigrow.app.ui.screen.auth.RegisterScreen
 import com.nutrigrow.app.ui.screen.home.HomeScreen
+import com.nutrigrow.app.ui.screen.home.HomeState
 import com.nutrigrow.app.ui.screen.home.HomeViewModel
 import com.nutrigrow.app.ui.screen.planner.AddProjectScreen
 import com.nutrigrow.app.ui.screen.planner.PlannerState
 import com.nutrigrow.app.ui.screen.planner.PlannerViewModel
+import com.nutrigrow.app.ui.screen.planner.ProjectDetailScreen
+import com.nutrigrow.app.ui.screen.planner.ProjectDetailViewModel
 import kotlinx.coroutines.launch
 
 @Composable
@@ -31,6 +34,7 @@ fun AppNavigation(
     homeViewModel: HomeViewModel,
     plannerViewModel: PlannerViewModel,
     aiGrowViewModel: AIGrowViewModel,
+    projectDetailViewModel: ProjectDetailViewModel,
     tokenManager: TokenManager
 ) {
     val navController = rememberNavController()
@@ -122,6 +126,27 @@ fun AppNavigation(
                 },
                 onNavigateToPlanner = {
                     navController.navigate(Screen.AddProject.route)
+                },
+                onProjectClick = { projectId ->
+                    navController.navigate(Screen.ProjectDetail.createRoute(projectId)) // problem
+                }
+            )
+        }
+
+        composable(Screen.ProjectDetail.route) { backStackEntry ->
+            val projectId = backStackEntry.arguments?.getString("projectId")
+
+            val homeState = homeViewModel.homeState.collectAsState().value
+            val project = if (homeState is HomeState.Success) {
+                homeState.projects.find { it.id == projectId }
+            } else null
+
+            ProjectDetailScreen(
+                project = project,
+                viewModel = projectDetailViewModel,
+                onNavigateBack = { navController.popBackStack() },
+                onLogAdded = {
+                    homeViewModel.fetchProjects()
                 }
             )
         }

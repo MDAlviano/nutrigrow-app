@@ -9,6 +9,7 @@ import retrofit2.http.Header
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
+import retrofit2.http.Path
 
 interface NutrigrowApi {
 
@@ -40,4 +41,13 @@ interface NutrigrowApi {
         @Part image: MultipartBody.Part,
         @Part("plant_type") plantType: RequestBody
     ): Response<BaseResponse<DiagnosisData>>
+
+    @Multipart
+    @POST("planner/projects/{project_id}/logs")
+    suspend fun addProjectLog(
+        @Header("Authorization") token: String,
+        @Path("project_id") projectId: String,
+        @Part image: MultipartBody.Part,
+        @Part("notes") notes: RequestBody
+    ): Response<BaseResponse<ProjectLog>>
 }

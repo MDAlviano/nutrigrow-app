@@ -17,6 +17,7 @@ import com.nutrigrow.app.ui.screen.aigrow.AIGrowViewModel
 import com.nutrigrow.app.ui.screen.auth.AuthViewModel
 import com.nutrigrow.app.ui.screen.home.HomeViewModel
 import com.nutrigrow.app.ui.screen.planner.PlannerViewModel
+import com.nutrigrow.app.ui.screen.planner.ProjectDetailViewModel
 import com.nutrigrow.app.ui.theme.NutrigrowTheme
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -64,6 +65,10 @@ class MainActivity : ComponentActivity() {
                     AIGrowViewModel(api, tokenManager) as T
                 }
 
+                modelClass.isAssignableFrom(ProjectDetailViewModel::class.java) -> {
+                    ProjectDetailViewModel(api, tokenManager) as T
+                }
+
                 else -> throw IllegalArgumentException("Unknown ViewModel class")
             }
         }
@@ -72,6 +77,7 @@ class MainActivity : ComponentActivity() {
     private val homeViewModel: HomeViewModel by viewModels { appViewModelFactory }
     private val plannerViewModel: PlannerViewModel by viewModels { appViewModelFactory }
     private val aiGrowViewModel: AIGrowViewModel by viewModels { appViewModelFactory }
+    private val projectDetailViewModel: ProjectDetailViewModel by viewModels { appViewModelFactory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,6 +92,7 @@ class MainActivity : ComponentActivity() {
                         homeViewModel = homeViewModel,
                         plannerViewModel = plannerViewModel,
                         aiGrowViewModel = aiGrowViewModel,
+                        projectDetailViewModel = projectDetailViewModel,
                         tokenManager = tokenManager
                     )
                 }
