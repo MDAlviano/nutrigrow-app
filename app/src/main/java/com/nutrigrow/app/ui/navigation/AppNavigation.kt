@@ -12,6 +12,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.nutrigrow.app.data.local.TokenManager
+import com.nutrigrow.app.ui.screen.aigrow.AIGrowScreen
+import com.nutrigrow.app.ui.screen.aigrow.AIGrowViewModel
 import com.nutrigrow.app.ui.screen.auth.AuthState
 import com.nutrigrow.app.ui.screen.auth.AuthViewModel
 import com.nutrigrow.app.ui.screen.auth.LoginScreen
@@ -28,6 +30,7 @@ fun AppNavigation(
     authViewModel: AuthViewModel,
     homeViewModel: HomeViewModel,
     plannerViewModel: PlannerViewModel,
+    aiGrowViewModel: AIGrowViewModel,
     tokenManager: TokenManager
 ) {
     val navController = rememberNavController()
@@ -114,7 +117,9 @@ fun AppNavigation(
                     }
                 },
                 viewModel = homeViewModel,
-                onNavigateToAIGrow = {  },
+                onNavigateToAIGrow = {
+                    navController.navigate(Screen.AIGrow.route)
+                },
                 onNavigateToPlanner = {
                     navController.navigate(Screen.AddProject.route)
                 }
@@ -142,6 +147,16 @@ fun AppNavigation(
                 onNavigateBack = { navController.popBackStack() },
                 onSubmit = { name, media, days ->
                     plannerViewModel.createProject(name, media, days)
+                }
+            )
+        }
+
+        composable(Screen.AIGrow.route) {
+            AIGrowScreen(
+                viewModel = aiGrowViewModel,
+                onNavigateBack = {
+                    navController.popBackStack()
+                    aiGrowViewModel.resetState()
                 }
             )
         }

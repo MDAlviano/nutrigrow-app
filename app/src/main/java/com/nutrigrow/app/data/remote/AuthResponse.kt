@@ -27,3 +27,11 @@ data class PlantingProject(
     @SerializedName("status") val status: String,
     @SerializedName("start_date") val startDate: String
 )
+
+data class DiagnosisData(
+    @SerializedName("disease_name") val diseaseName: String,
+    @SerializedName("confidence_score") val confidenceScore: Double,
+    @SerializedName("ai_reasoning") val aiReasoning: String,
+    @SerializedName("organic_solutions") val organicSolutions: List<String>,
+    @SerializedName("image_url") val imageUrl: String?
+)

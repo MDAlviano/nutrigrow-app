@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.nutrigrow.app.data.local.TokenManager
 import com.nutrigrow.app.data.remote.NutrigrowApi
 import com.nutrigrow.app.ui.navigation.AppNavigation
+import com.nutrigrow.app.ui.screen.aigrow.AIGrowViewModel
 import com.nutrigrow.app.ui.screen.auth.AuthViewModel
 import com.nutrigrow.app.ui.screen.home.HomeViewModel
 import com.nutrigrow.app.ui.screen.planner.PlannerViewModel
@@ -59,6 +60,10 @@ class MainActivity : ComponentActivity() {
                     PlannerViewModel(api, tokenManager) as T
                 }
 
+                modelClass.isAssignableFrom(AIGrowViewModel::class.java) -> {
+                    AIGrowViewModel(api, tokenManager) as T
+                }
+
                 else -> throw IllegalArgumentException("Unknown ViewModel class")
             }
         }
@@ -66,6 +71,7 @@ class MainActivity : ComponentActivity() {
     private val authViewModel: AuthViewModel by viewModels { appViewModelFactory }
     private val homeViewModel: HomeViewModel by viewModels { appViewModelFactory }
     private val plannerViewModel: PlannerViewModel by viewModels { appViewModelFactory }
+    private val aiGrowViewModel: AIGrowViewModel by viewModels { appViewModelFactory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,6 +85,7 @@ class MainActivity : ComponentActivity() {
                         authViewModel = authViewModel,
                         homeViewModel = homeViewModel,
                         plannerViewModel = plannerViewModel,
+                        aiGrowViewModel = aiGrowViewModel,
                         tokenManager = tokenManager
                     )
                 }
