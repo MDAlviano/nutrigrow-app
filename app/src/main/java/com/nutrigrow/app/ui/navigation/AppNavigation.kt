@@ -18,12 +18,16 @@ import com.nutrigrow.app.ui.screen.auth.LoginScreen
 import com.nutrigrow.app.ui.screen.auth.RegisterScreen
 import com.nutrigrow.app.ui.screen.home.HomeScreen
 import com.nutrigrow.app.ui.screen.home.HomeViewModel
+import com.nutrigrow.app.ui.screen.planner.AddProjectScreen
+import com.nutrigrow.app.ui.screen.planner.PlannerState
+import com.nutrigrow.app.ui.screen.planner.PlannerViewModel
 import kotlinx.coroutines.launch
 
 @Composable
 fun AppNavigation(
     authViewModel: AuthViewModel,
     homeViewModel: HomeViewModel,
+    plannerViewModel: PlannerViewModel,
     tokenManager: TokenManager
 ) {
     val navController = rememberNavController()
@@ -110,8 +114,35 @@ fun AppNavigation(
                     }
                 },
                 viewModel = homeViewModel,
-                onNavigateToAIGrow = { /* Nanti kita isi rute ke Scanner */ },
-                onNavigateToPlanner = { /* Nanti kita isi rute ke Planner */ }
+                onNavigateToAIGrow = {  },
+                onNavigateToPlanner = {
+                    navController.navigate(Screen.AddProject.route)
+                }
+            )
+        }
+
+        composable(Screen.AddProject.route) {
+            val plannerState by plannerViewModel.plannerState.collectAsState()
+
+            LaunchedEffect(plannerState) {
+                if (plannerState is PlannerState.Success) {
+                    Toast.makeText(context, "Proyek berhasil dibuat!", Toast.LENGTH_SHORT).show()
+                    plannerViewModel.resetState()
+
+                    navController.popBackStack()
+                    homeViewModel.fetchProjects()
+                } else if (plannerState is PlannerState.Error) {
+                    val msg = (plannerState as PlannerState.Error).message
+                    Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
+                    plannerViewModel.resetState()
+                }
+            }
+
+            AddProjectScreen(
+                onNavigateBack = { navController.popBackStack() },
+                onSubmit = { name, media, days ->
+                    plannerViewModel.createProject(name, media, days)
+                }
             )
         }
     }

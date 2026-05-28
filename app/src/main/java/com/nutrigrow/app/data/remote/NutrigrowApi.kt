@@ -23,4 +23,10 @@ interface NutrigrowApi {
         @Header("Authorization") token: String
     ): Response<BaseResponse<List<PlantingProject>>>
 
+    @POST("planner/projects")
+    suspend fun createProject(
+        @Header("Authorization") token: String,
+        @Body request: Map<String, Any>
+    ): Response<BaseResponse<PlantingProject>>
+
 }
