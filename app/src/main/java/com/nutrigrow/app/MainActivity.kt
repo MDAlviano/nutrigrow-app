@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.nutrigrow.app.data.local.TokenManager
@@ -38,10 +39,16 @@ class MainActivity : ComponentActivity() {
             }
             val client = OkHttpClient.Builder()
                 .addInterceptor(logging)
+                .addInterceptor { chain ->
+                    val newRequest = chain.request().newBuilder()
+                        .addHeader("ngrok-skip-browser-warning", "true")
+                        .build()
+                    chain.proceed(newRequest)
+                }
                 .build()
 
             val retrofit = Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:8080/api/v1/")
+                .baseUrl(" https://8141-114-10-44-181.ngrok-free.app/api/v1/")
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
@@ -80,6 +87,8 @@ class MainActivity : ComponentActivity() {
     private val projectDetailViewModel: ProjectDetailViewModel by viewModels { appViewModelFactory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
+
         super.onCreate(savedInstanceState)
         setContent {
             NutrigrowTheme {

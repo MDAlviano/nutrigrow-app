@@ -2,4 +2,10 @@
 <resources>
 
     <style name="Theme.Nutrigrow" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="Theme.Nutrigrow.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_nutrigrow_logo</item>
+        <item name="windowSplashScreenBackground">#E8F5E9</item>
+        <item name="postSplashScreenTheme">@style/Theme.Nutrigrow</item>
+    </style>
 </resources>
