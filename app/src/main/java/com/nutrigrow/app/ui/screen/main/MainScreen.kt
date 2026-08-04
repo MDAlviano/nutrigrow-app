@@ -25,10 +25,13 @@ import com.nutrigrow.app.ui.ViewModelFactory
 import com.nutrigrow.app.ui.navigation.BottomNavItem
 import com.nutrigrow.app.ui.navigation.Screen
 import com.nutrigrow.app.ui.screen.aigrow.AIGrowScreen
+import com.nutrigrow.app.ui.screen.aigrow.AIGrowViewModel
 import com.nutrigrow.app.ui.screen.home.HomeScreen
+import com.nutrigrow.app.ui.screen.planner.AddProjectScreen
 import com.nutrigrow.app.ui.screen.planner.PlannerScreen
 import com.nutrigrow.app.ui.screen.planner.PlannerViewModel
 import com.nutrigrow.app.ui.screen.profile.ProfileScreen
+import com.nutrigrow.app.ui.screen.profile.ProfileViewModel
 
 @Composable
 fun MainScreen(
@@ -98,18 +101,30 @@ fun MainScreen(
                 )
             }
             composable(BottomNavItem.AIGrow.route) {
-                AIGrowScreen()
+                val aiGrowViewModel: AIGrowViewModel = viewModel(factory = factory)
+                AIGrowScreen(viewModel = aiGrowViewModel)
             }
             composable(BottomNavItem.Planner.route) {
                 val plannerViewModel: PlannerViewModel = viewModel(factory = factory)
                 PlannerScreen(
                     viewModel = plannerViewModel,
-                    onNavigateToAddProject = { /* Pindah ke AddProjectScreen */ }
+                    onNavigateToAddProject = {
+                        rootNavController.navigate(Screen.AddProject.route)
+                    }
+                )
+            }
+            composable(Screen.AddProject.route) {
+                val plannerViewModel: PlannerViewModel = viewModel(factory = factory)
+                AddProjectScreen(
+                    viewModel = plannerViewModel,
+                    onNavigateBack = { rootNavController.popBackStack() }
                 )
             }
             composable(BottomNavItem.Profile.route) {
+                val profileViewModel: ProfileViewModel = viewModel(factory = factory)
                 ProfileScreen(
-                    onLogoutClick = {
+                    viewModel = profileViewModel,
+                    onLogoutFinished = {
                         rootNavController.navigate(Screen.Login.route) {
                             popUpTo(Screen.Main.route) { inclusive = true }
                         }
