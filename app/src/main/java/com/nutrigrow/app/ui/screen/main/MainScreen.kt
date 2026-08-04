@@ -20,6 +20,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.nutrigrow.app.ui.navigation.BottomNavItem
+import com.nutrigrow.app.ui.navigation.Screen
+import com.nutrigrow.app.ui.screen.aigrow.AIGrowScreen
+import com.nutrigrow.app.ui.screen.home.HomeScreen
+import com.nutrigrow.app.ui.screen.planner.PlannerScreen
+import com.nutrigrow.app.ui.screen.profile.ProfileScreen
 
 @Composable
 fun MainScreen(
@@ -80,20 +85,27 @@ fun MainScreen(
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(BottomNavItem.Home.route) {
-                // Placeholder HomeTab
-                Text("Halaman Home (Beranda)")
+                HomeScreen(
+                    onNavigateToAIGrow = { bottomNavController.navigate(BottomNavItem.AIGrow.route) },
+                    onNavigateToPlanner = { bottomNavController.navigate(BottomNavItem.Planner.route) }
+                )
             }
             composable(BottomNavItem.AIGrow.route) {
-                // Placeholder AIGrowTab
-                Text("Halaman AIGrow Scanner")
+                AIGrowScreen()
             }
             composable(BottomNavItem.Planner.route) {
-                // Placeholder PlannerTab
-                Text("Halaman Plant Planner")
+                PlannerScreen(
+                    onNavigateToAddProject = { }
+                )
             }
             composable(BottomNavItem.Profile.route) {
-                // Placeholder ProfileTab
-                Text("Halaman Profil User")
+                ProfileScreen(
+                    onLogoutClick = {
+                        rootNavController.navigate(Screen.Login.route) {
+                            popUpTo(Screen.Main.route) { inclusive = true }
+                        }
+                    }
+                )
             }
         }
     }
