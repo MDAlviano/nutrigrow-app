@@ -13,7 +13,7 @@ sealed class BottomNavItem(
     val icon: ImageVector
 ) {
     object Home : BottomNavItem("home_tab", "Beranda", Icons.Default.Home)
-    object AIGrow : BottomNavItem("aigrow_tab", "AIGrpw", Icons.Default.QrCodeScanner)
+    object AIGrow : BottomNavItem("aigrow_tab", "AIGrow", Icons.Default.QrCodeScanner)
     object Planner : BottomNavItem("planner_tab", "Planner", Icons.Default.CalendarMonth)
     object Profile : BottomNavItem("profile_tab", "Profil", Icons.Default.Person)
 }

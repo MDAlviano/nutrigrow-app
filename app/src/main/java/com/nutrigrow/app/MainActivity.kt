@@ -3,107 +3,83 @@ package com.nutrigrow.app
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.compose.rememberNavController
 import com.nutrigrow.app.data.local.TokenManager
-import com.nutrigrow.app.data.remote.NutrigrowApi
-import com.nutrigrow.app.ui.navigation.AppNavigation
-import com.nutrigrow.app.ui.screen.aigrow.AIGrowViewModel
-import com.nutrigrow.app.ui.screen.auth.AuthViewModel
-import com.nutrigrow.app.ui.screen.home.HomeViewModel
-import com.nutrigrow.app.ui.screen.planner.PlannerViewModel
-import com.nutrigrow.app.ui.screen.planner.ProjectDetailViewModel
+import com.nutrigrow.app.data.local.UserPreferences
+import com.nutrigrow.app.ui.navigation.AppNavHost
+import com.nutrigrow.app.ui.navigation.Screen
 import com.nutrigrow.app.ui.theme.NutrigrowTheme
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
-
-    private val tokenManager by lazy {
-        TokenManager(applicationContext)
-    }
-
-    private val appViewModelFactory = object : ViewModelProvider.Factory {
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-
-            val logging = HttpLoggingInterceptor().apply {
-                level = HttpLoggingInterceptor.Level.BODY
-            }
-            val client = OkHttpClient.Builder()
-                .addInterceptor(logging)
-                .addInterceptor { chain ->
-                    val newRequest = chain.request().newBuilder()
-                        .addHeader("ngrok-skip-browser-warning", "true")
-                        .build()
-                    chain.proceed(newRequest)
-                }
-                .build()
-
-            val retrofit = Retrofit.Builder()
-                .baseUrl(" https://8141-114-10-44-181.ngrok-free.app/api/v1/")
-                .client(client)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-
-            val api = retrofit.create(NutrigrowApi::class.java)
-
-            return when {
-                modelClass.isAssignableFrom(AuthViewModel::class.java) -> {
-                    AuthViewModel(api, tokenManager) as T
-                }
-
-                modelClass.isAssignableFrom(HomeViewModel::class.java) -> {
-                    HomeViewModel(api, tokenManager) as T
-                }
-
-                modelClass.isAssignableFrom(PlannerViewModel::class.java) -> {
-                    PlannerViewModel(api, tokenManager) as T
-                }
-
-                modelClass.isAssignableFrom(AIGrowViewModel::class.java) -> {
-                    AIGrowViewModel(api, tokenManager) as T
-                }
-
-                modelClass.isAssignableFrom(ProjectDetailViewModel::class.java) -> {
-                    ProjectDetailViewModel(api, tokenManager) as T
-                }
-
-                else -> throw IllegalArgumentException("Unknown ViewModel class")
-            }
-        }
-    }
-    private val authViewModel: AuthViewModel by viewModels { appViewModelFactory }
-    private val homeViewModel: HomeViewModel by viewModels { appViewModelFactory }
-    private val plannerViewModel: PlannerViewModel by viewModels { appViewModelFactory }
-    private val aiGrowViewModel: AIGrowViewModel by viewModels { appViewModelFactory }
-    private val projectDetailViewModel: ProjectDetailViewModel by viewModels { appViewModelFactory }
-
     override fun onCreate(savedInstanceState: Bundle?) {
-        installSplashScreen()
-
         super.onCreate(savedInstanceState)
+
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+
+        val userPreferences = UserPreferences(this)
+        val tokenManager = TokenManager(this)
+
         setContent {
-            NutrigrowTheme {
+            NutrigrowTheme(darkTheme = false) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    color = Color.White
                 ) {
-                    AppNavigation(
-                        authViewModel = authViewModel,
-                        homeViewModel = homeViewModel,
-                        plannerViewModel = plannerViewModel,
-                        aiGrowViewModel = aiGrowViewModel,
-                        projectDetailViewModel = projectDetailViewModel,
-                        tokenManager = tokenManager
-                    )
+                    val navController = rememberNavController()
+                    val coroutineScope = rememberCoroutineScope()
+
+                    var nextDestinationAfterSplash by remember { mutableStateOf<String?>(null) }
+
+                    LaunchedEffect(Unit) {
+                        val isOnBoardingCompleted = userPreferences.isOnBoardingCompleted.first()
+                        val jwtToken = tokenManager.getToken.first()
+
+                        nextDestinationAfterSplash = when {
+                            !isOnBoardingCompleted -> Screen.OnBoarding.route
+                            jwtToken.isNullOrEmpty() -> Screen.Login.route
+                            else -> Screen.Main.route
+                        }
+                    }
+
+                    if (nextDestinationAfterSplash == null) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(Color.White),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator(color = Color(0xFF059669))
+                        }
+                    } else {
+                        AppNavHost(
+                            navController = navController,
+                            startDestination = Screen.Splash.route,
+                            nextDestinationAfterSplash = nextDestinationAfterSplash!!,
+                            onSaveOnBoardingCompleted = {
+                                coroutineScope.launch {
+                                    userPreferences.setOnBoardingCompleted(true)
+                                }
+                            }
+                        )
+                    }
                 }
             }
         }

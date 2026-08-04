@@ -9,11 +9,13 @@ import com.nutrigrow.app.ui.screen.auth.LoginScreen
 import com.nutrigrow.app.ui.screen.auth.RegisterScreen
 import com.nutrigrow.app.ui.screen.main.MainScreen
 import com.nutrigrow.app.ui.screen.onboarding.OnboardingScreen
+import com.nutrigrow.app.ui.screen.splash.SplashScreen
 
 @Composable
 fun AppNavHost(
     navController: NavHostController,
     startDestination: String = Screen.OnBoarding.route,
+    nextDestinationAfterSplash: String,
     onSaveOnBoardingCompleted: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -22,6 +24,16 @@ fun AppNavHost(
         startDestination = startDestination,
         modifier = modifier
     ) {
+        composable(Screen.Splash.route) {
+            SplashScreen(
+                onSplashFinished = {
+                    navController.navigate(nextDestinationAfterSplash) {
+                        popUpTo(Screen.Splash.route) { inclusive = true }
+                    }
+                }
+            )
+        }
+
         composable(Screen.OnBoarding.route) {
             OnboardingScreen(
                 onFinishOnboarding = {
