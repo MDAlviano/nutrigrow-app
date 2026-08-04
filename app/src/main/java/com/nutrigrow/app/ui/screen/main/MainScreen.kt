@@ -11,25 +11,32 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.nutrigrow.app.ui.ViewModelFactory
 import com.nutrigrow.app.ui.navigation.BottomNavItem
 import com.nutrigrow.app.ui.navigation.Screen
 import com.nutrigrow.app.ui.screen.aigrow.AIGrowScreen
 import com.nutrigrow.app.ui.screen.home.HomeScreen
 import com.nutrigrow.app.ui.screen.planner.PlannerScreen
+import com.nutrigrow.app.ui.screen.planner.PlannerViewModel
 import com.nutrigrow.app.ui.screen.profile.ProfileScreen
 
 @Composable
 fun MainScreen(
     rootNavController: NavHostController
 ) {
+    val context = LocalContext.current
+    val factory = ViewModelFactory(context)
+
     val bottomNavController = rememberNavController()
     val navItems = listOf(
         BottomNavItem.Home,
@@ -94,8 +101,10 @@ fun MainScreen(
                 AIGrowScreen()
             }
             composable(BottomNavItem.Planner.route) {
+                val plannerViewModel: PlannerViewModel = viewModel(factory = factory)
                 PlannerScreen(
-                    onNavigateToAddProject = { }
+                    viewModel = plannerViewModel,
+                    onNavigateToAddProject = { /* Pindah ke AddProjectScreen */ }
                 )
             }
             composable(BottomNavItem.Profile.route) {

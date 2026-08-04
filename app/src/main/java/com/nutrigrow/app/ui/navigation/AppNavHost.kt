@@ -2,9 +2,13 @@ package com.nutrigrow.app.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.nutrigrow.app.ui.ViewModelFactory
+import com.nutrigrow.app.ui.screen.auth.AuthViewModel
 import com.nutrigrow.app.ui.screen.auth.LoginScreen
 import com.nutrigrow.app.ui.screen.auth.RegisterScreen
 import com.nutrigrow.app.ui.screen.main.MainScreen
@@ -19,6 +23,9 @@ fun AppNavHost(
     onSaveOnBoardingCompleted: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
+    val factory = ViewModelFactory(context)
+
     NavHost(
         navController = navController,
         startDestination = startDestination,
@@ -46,7 +53,9 @@ fun AppNavHost(
         }
 
         composable(Screen.Login.route) {
+            val authViewModel: AuthViewModel = viewModel(factory = factory)
             LoginScreen(
+                viewModel = authViewModel,
                 onLoginSuccess = {
                     navController.navigate(Screen.Main.route) {
                         popUpTo(Screen.Login.route) { inclusive = true }
@@ -59,7 +68,9 @@ fun AppNavHost(
         }
 
         composable(Screen.Register.route) {
+            val authViewModel: AuthViewModel = viewModel(factory = factory)
             RegisterScreen(
+                viewModel = authViewModel,
                 onRegisterSuccess = {
                     navController.navigate(Screen.Main.route) {
                         popUpTo(Screen.Register.route) { inclusive = true }
