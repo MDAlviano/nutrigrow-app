@@ -13,6 +13,13 @@ data class LoginRequest(
     @SerializedName("password") val password: String
 )
 
+data class UserDto(
+    @SerializedName("id") val id: String,
+    @SerializedName("email") val email: String,
+    @SerializedName("display_name") val displayName: String
+)
+
 data class LoginData(
-    @SerializedName("token") val token: String
+    @SerializedName("token") val token: String,
+    @SerializedName("user") val user: UserDto?
 )

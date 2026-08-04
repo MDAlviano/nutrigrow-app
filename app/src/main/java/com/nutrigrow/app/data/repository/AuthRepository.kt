@@ -33,13 +33,18 @@ class AuthRepository(
         try {
             val response = api.login(LoginRequest(email, password))
             val body = response.body()
+
             if (response.isSuccessful && body?.success == true && body.data != null) {
+                val token = body.data.token
+                val user = body.data.user
+
                 tokenManager.saveAuthData(
-                    token = body.data.token,
-                    userId = "",
-                    email = email,
-                    name = ""
+                    token = token,
+                    userId = user?.id ?: "",
+                    email = user?.email ?: email,
+                    name = user?.displayName ?: ""
                 )
+
                 emit(Resource.Success(body.message))
             } else {
                 emit(Resource.Error(body?.message ?: "Login gagal, periksa email/password"))

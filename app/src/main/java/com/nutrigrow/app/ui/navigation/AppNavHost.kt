@@ -74,12 +74,12 @@ fun AppNavHost(
             RegisterScreen(
                 viewModel = authViewModel,
                 onRegisterSuccess = {
-                    navController.navigate(Screen.Main.route) {
+                    navController.navigate(Screen.Login.route) {
                         popUpTo(Screen.Register.route) { inclusive = true }
                     }
                 },
                 onNavigateToLogin = {
-                    navController.navigate(Screen.Login.route)
+                    navController.popBackStack()
                 }
             )
         }

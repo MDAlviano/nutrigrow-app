@@ -14,13 +14,13 @@ class ProfileViewModel(
     val userName: StateFlow<String?> = tokenManager.getUserName.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
-        initialValue = "Pengguna Nutrigrow"
+        initialValue = "Memuat nama..."
     )
 
     val userEmail: StateFlow<String?> = tokenManager.getUserEmail.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
-        initialValue = "user@nutrigrow.app"
+        initialValue = "Memuat email..."
     )
 
     fun logout(onLogoutFinished: () -> Unit) {
