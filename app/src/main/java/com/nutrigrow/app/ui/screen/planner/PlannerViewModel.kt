@@ -40,4 +40,25 @@ class PlannerViewModel(
             }
         }
     }
+
+    fun createProject(
+        name: String,
+        media: String,
+        targetDays: Int,
+        onResult: (Boolean, String) -> Unit
+    ) {
+        viewModelScope.launch {
+            repository.createProject(name, media, targetDays).collect { resource ->
+                when (resource) {
+                    is Resource.Success -> {
+                        fetchProjects()
+                        onResult(true, "Proyek berhasil dibuat")
+                    }
+
+                    is Resource.Error -> onResult(false, resource.message ?: "Gagal membuat proyek")
+                    else -> {}
+                }
+            }
+        }
+    }
 }
