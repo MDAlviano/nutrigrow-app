@@ -95,7 +95,11 @@ fun MainScreen(
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(BottomNavItem.Home.route) {
+                val plannerViewModel: PlannerViewModel = viewModel(factory = factory)
+                val profileViewModel: ProfileViewModel = viewModel(factory = factory)
                 HomeScreen(
+                    plannerViewModel = plannerViewModel,
+                    profileViewModel = profileViewModel,
                     onNavigateToAIGrow = { bottomNavController.navigate(BottomNavItem.AIGrow.route) },
                     onNavigateToPlanner = { bottomNavController.navigate(BottomNavItem.Planner.route) }
                 )

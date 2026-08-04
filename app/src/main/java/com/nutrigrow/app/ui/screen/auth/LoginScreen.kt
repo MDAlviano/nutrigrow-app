@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -103,7 +104,8 @@ fun LoginScreen(
             text = "Masuk untuk melanjutkan aktivitas perawat tanamanmu",
             fontSize = 14.sp,
             color = Color(0xFF6B7280),
-            modifier = Modifier.padding(top = 8.dp, bottom = 32.dp)
+            modifier = Modifier.padding(top = 8.dp, bottom = 32.dp),
+            textAlign = TextAlign.Center
         )
 
         // Email Field

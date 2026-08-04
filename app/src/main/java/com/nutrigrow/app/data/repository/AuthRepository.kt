@@ -34,10 +34,11 @@ class AuthRepository(
             val response = api.login(LoginRequest(email, password))
             val body = response.body()
             if (response.isSuccessful && body?.success == true && body.data != null) {
-                // Simpan Token ke DataStore
                 tokenManager.saveAuthData(
                     token = body.data.token,
-                    userId = ""
+                    userId = "",
+                    email = email,
+                    name = ""
                 )
                 emit(Resource.Success(body.message))
             } else {

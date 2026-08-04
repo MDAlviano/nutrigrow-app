@@ -1,7 +1,15 @@
 package com.nutrigrow.app.ui.screen.profile
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -9,8 +17,17 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Security
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,7 +41,8 @@ fun ProfileScreen(
     viewModel: ProfileViewModel,
     onLogoutFinished: () -> Unit
 ) {
-    val userEmail by viewModel.userEmail.collectAsState(initial = "Memuat...")
+    val userName by viewModel.userName.collectAsState()
+    val userEmail by viewModel.userEmail.collectAsState()
 
     Column(
         modifier = Modifier
@@ -53,14 +71,14 @@ fun ProfileScreen(
         Spacer(modifier = Modifier.height(12.dp))
 
         Text(
-            text = "Pengguna Nutrigrow",
+            text = userName ?: "Pengguna Nutrigrow",
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
             color = Color(0xFF111827)
         )
 
         Text(
-            text = userEmail ?: "User",
+            text = userEmail ?: "-",
             fontSize = 13.sp,
             color = Color(0xFF6B7280)
         )
@@ -101,9 +119,7 @@ fun ProfileScreen(
         Spacer(modifier = Modifier.height(24.dp))
 
         Button(
-            onClick = {
-                viewModel.logout(onLogoutFinished)
-            },
+            onClick = { viewModel.logout(onLogoutFinished) },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp),

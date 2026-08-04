@@ -13,6 +13,8 @@ import com.nutrigrow.app.ui.screen.auth.LoginScreen
 import com.nutrigrow.app.ui.screen.auth.RegisterScreen
 import com.nutrigrow.app.ui.screen.main.MainScreen
 import com.nutrigrow.app.ui.screen.onboarding.OnboardingScreen
+import com.nutrigrow.app.ui.screen.planner.AddProjectScreen
+import com.nutrigrow.app.ui.screen.planner.PlannerViewModel
 import com.nutrigrow.app.ui.screen.splash.SplashScreen
 
 @Composable
@@ -84,6 +86,14 @@ fun AppNavHost(
 
         composable(Screen.Main.route) {
             MainScreen(rootNavController = navController)
+        }
+
+        composable(Screen.AddProject.route) {
+            val plannerViewModel: PlannerViewModel = viewModel(factory = factory)
+            AddProjectScreen(
+                viewModel = plannerViewModel,
+                onNavigateBack = { navController.popBackStack() }
+            )
         }
     }
 }
