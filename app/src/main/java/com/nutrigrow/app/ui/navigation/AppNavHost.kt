@@ -5,16 +5,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
+import com.nutrigrow.app.data.remote.dto.ProjectData
 import com.nutrigrow.app.ui.ViewModelFactory
 import com.nutrigrow.app.ui.screen.auth.AuthViewModel
 import com.nutrigrow.app.ui.screen.auth.LoginScreen
 import com.nutrigrow.app.ui.screen.auth.RegisterScreen
 import com.nutrigrow.app.ui.screen.main.MainScreen
 import com.nutrigrow.app.ui.screen.onboarding.OnboardingScreen
+import com.nutrigrow.app.ui.screen.planner.AddLogScreen
 import com.nutrigrow.app.ui.screen.planner.AddProjectScreen
 import com.nutrigrow.app.ui.screen.planner.PlannerViewModel
+import com.nutrigrow.app.ui.screen.planner.ProjectDetailScreen
 import com.nutrigrow.app.ui.screen.splash.SplashScreen
 
 @Composable
@@ -91,6 +96,36 @@ fun AppNavHost(
         composable(Screen.AddProject.route) {
             val plannerViewModel: PlannerViewModel = viewModel(factory = factory)
             AddProjectScreen(
+                viewModel = plannerViewModel,
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(Screen.ProjectDetail.route) {
+            val project = navController.previousBackStackEntry
+                ?.savedStateHandle
+                ?.get<ProjectData>("selected_project")
+
+            if (project != null) {
+                ProjectDetailScreen(
+                    project = project,
+                    onNavigateBack = { navController.popBackStack() },
+                    onAddLogClick = { projectId ->
+                        navController.navigate(Screen.AddLog.createRoute(projectId))
+                    }
+                )
+            }
+        }
+
+        composable(
+            route = Screen.AddLog.route,
+            arguments = listOf(navArgument("projectId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val projectId = backStackEntry.arguments?.getString("projectId") ?: ""
+            val plannerViewModel: PlannerViewModel = viewModel(factory = factory)
+
+            AddLogScreen(
+                projectId = projectId,
                 viewModel = plannerViewModel,
                 onNavigateBack = { navController.popBackStack() }
             )

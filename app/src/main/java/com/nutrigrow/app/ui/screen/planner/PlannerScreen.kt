@@ -1,6 +1,7 @@
 package com.nutrigrow.app.ui.screen.planner
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,6 +27,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -34,13 +36,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.nutrigrow.app.data.remote.dto.ProjectData
 
 @Composable
 fun PlannerScreen(
     viewModel: PlannerViewModel,
-    onNavigateToAddProject: () -> Unit
+    onNavigateToAddProject: () -> Unit,
+    onNavigateToProjectDetail: (ProjectData) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.fetchProjects()
+    }
 
     Scaffold(
         floatingActionButton = {
@@ -105,7 +113,11 @@ fun PlannerScreen(
 
                             items(projects) { project ->
                                 Card(
-                                    modifier = Modifier.fillMaxWidth(),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable {
+                                            onNavigateToProjectDetail(project)
+                                        },
                                     shape = RoundedCornerShape(16.dp),
                                     colors = CardDefaults.cardColors(containerColor = Color.White),
                                     elevation = CardDefaults.cardElevation(2.dp)

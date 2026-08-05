@@ -114,6 +114,10 @@ fun MainScreen(
                     viewModel = plannerViewModel,
                     onNavigateToAddProject = {
                         rootNavController.navigate(Screen.AddProject.route)
+                    },
+                    onNavigateToProjectDetail = { project ->
+                        rootNavController.currentBackStackEntry?.savedStateHandle?.set("selected_project", project)
+                        rootNavController.navigate(Screen.ProjectDetail.route)
                     }
                 )
             }

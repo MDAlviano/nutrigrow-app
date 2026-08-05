@@ -8,6 +8,7 @@ import com.nutrigrow.app.util.Resource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.io.File
 
 sealed class PlannerUiState {
     object Loading : PlannerUiState()
@@ -56,6 +57,27 @@ class PlannerViewModel(
                     }
 
                     is Resource.Error -> onResult(false, resource.message ?: "Gagal membuat proyek")
+                    else -> {}
+                }
+            }
+        }
+    }
+
+    fun addProgressLog(
+        projectId: String,
+        imageFile: File,
+        notes: String,
+        onResult: (Boolean, String) -> Unit
+    ) {
+        viewModelScope.launch {
+            repository.addProgressLog(projectId, imageFile, notes).collect { resource ->
+                when (resource) {
+                    is Resource.Success -> {
+                        fetchProjects()
+                        onResult(true, "Log perkembangan berhasil ditambahkan")
+                    }
+
+                    is Resource.Error -> onResult(false, resource.message ?: "Gagal menambah log")
                     else -> {}
                 }
             }

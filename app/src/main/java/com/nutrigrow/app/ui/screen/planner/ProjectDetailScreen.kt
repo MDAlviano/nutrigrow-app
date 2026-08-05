@@ -45,7 +45,7 @@ import com.nutrigrow.app.data.remote.dto.ProjectData
 fun ProjectDetailScreen(
     project: ProjectData,
     onNavigateBack: () -> Unit,
-    onAddLogClick: () -> Unit
+    onAddLogClick: (String) -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -61,7 +61,7 @@ fun ProjectDetailScreen(
         },
         floatingActionButton = {
             ExtendedFloatingActionButton(
-                onClick = onAddLogClick,
+                onClick = { onAddLogClick(project.id) },
                 containerColor = Color(0xFF059669),
                 contentColor = Color.White,
                 icon = { Icon(Icons.Default.AddAPhoto, contentDescription = null) },
